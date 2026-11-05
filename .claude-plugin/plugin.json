@@ -1,0 +1,12 @@
+{
+  "name": "rag-pipeline-review",
+  "description": "Audits an existing retrieval-augmented generation pipeline: scores saved retrieval results against a labelled query set (recall@k, precision@k, MRR, nDCG, hit rate) and checks exported chunks for duplicates, mid-sentence cuts and documents that were never indexed.",
+  "author": {
+    "name": "Muhammad Waseem Panhwar",
+    "url": "https://github.com/panhwerwaseem"
+  },
+  "homepage": "https://github.com/panhwerwaseem/rag-pipeline-review",
+  "repository": "https://github.com/panhwerwaseem/rag-pipeline-review",
+  "license": "MIT",
+  "keywords": ["rag", "retrieval", "evaluation", "chunking", "agent-skills"]
+}

@@ -1,0 +1,14 @@
+[
+  "kb/refunds.md",
+  "kb/billing-cycles.md",
+  "kb/sso-setup.md",
+  "kb/api-keys.md",
+  "kb/rate-limits.md",
+  "kb/data-export.md",
+  "kb/password-reset.md",
+  "kb/user-roles.md",
+  "kb/webhooks.md",
+  "kb/account-deletion.md",
+  "kb/two-factor.md",
+  "kb/invoices.md"
+]

@@ -1,0 +1,24 @@
+{"id": "q01", "query": "How long do I have to ask for a refund on an annual plan?", "relevant": ["kb/refunds.md"]}
+{"id": "q02", "query": "Where does the refund money go and how long does it take?", "relevant": ["kb/refunds.md"]}
+{"id": "q03", "query": "What happens if my renewal payment fails?", "relevant": ["kb/billing-cycles.md"]}
+{"id": "q04", "query": "Do I get a discount for switching to annual billing?", "relevant": ["kb/billing-cycles.md"]}
+{"id": "q05", "query": "How do I set up SAML single sign-on?", "relevant": ["kb/sso-setup.md"]}
+{"id": "q06", "query": "Are new users created automatically when they sign in through SSO?", "relevant": ["kb/sso-setup.md"]}
+{"id": "q07", "query": "Can I still log in with a password after SSO is enforced?", "relevant": ["kb/sso-setup.md", "kb/password-reset.md"]}
+{"id": "q08", "query": "How do I rotate an API key?", "relevant": ["kb/api-keys.md"]}
+{"id": "q09", "query": "Where do I put the API key in a request?", "relevant": ["kb/api-keys.md"]}
+{"id": "q10", "query": "What does a 429 response mean?", "relevant": ["kb/rate-limits.md"]}
+{"id": "q11", "query": "How many API requests per minute are allowed?", "relevant": ["kb/rate-limits.md"]}
+{"id": "q12", "query": "How do I export all my invoices to CSV?", "relevant": ["kb/data-export.md"]}
+{"id": "q13", "query": "The export download link stopped working", "relevant": ["kb/data-export.md"]}
+{"id": "q14", "query": "I forgot my password, how do I get back in?", "relevant": ["kb/password-reset.md"]}
+{"id": "q15", "query": "I did not receive the password reset email", "relevant": ["kb/password-reset.md"]}
+{"id": "q16", "query": "Who can change a user's role?", "relevant": ["kb/user-roles.md"]}
+{"id": "q17", "query": "Why can't a member see a colleague's invoices?", "relevant": ["kb/user-roles.md"]}
+{"id": "q18", "query": "How do I verify a webhook signature?", "relevant": ["kb/webhooks.md"]}
+{"id": "q19", "query": "How many times is a failed webhook delivery retried?", "relevant": ["kb/webhooks.md"]}
+{"id": "q20", "query": "How long before a deleted workspace is really gone?", "relevant": ["kb/account-deletion.md"]}
+{"id": "q21", "query": "I lost my phone and cannot get my login code", "relevant": ["kb/two-factor.md"]}
+{"id": "q22", "query": "Can admins force everyone to use two-factor authentication?", "relevant": ["kb/two-factor.md"]}
+{"id": "q23", "query": "How do I fix a mistake on an invoice I already sent?", "relevant": ["kb/invoices.md"]}
+{"id": "q24", "query": "What should I do before deleting my workspace if I need the invoices for tax?", "relevant": ["kb/account-deletion.md", "kb/data-export.md"]}

@@ -1,0 +1,27 @@
+{
+  "skill_name": "rag-pipeline-review",
+  "should_trigger": [
+    "our RAG chatbot says it doesn't know how to set up SSO but the help article exists, find out why",
+    "can you review our retrieval pipeline before we launch the docs assistant",
+    "answers got worse after we re-indexed the knowledge base last week",
+    "is our chunk size of 512 tokens right for this corpus or should we change it",
+    "should we add a reranker to our vector search, here are the current results",
+    "compute recall@5 and MRR for these retrieval results against our labelled questions",
+    "the assistant hallucinates even though the right document is in the index, is it retrieval or the model",
+    "we want to switch embedding models, how do I prove the new one retrieves better",
+    "check our vector index export for duplicate and broken chunks",
+    "pgvector search returns irrelevant passages for half of our test queries, audit it"
+  ],
+  "should_not_trigger": [
+    "build me a RAG chatbot over our Confluence space from scratch",
+    "which vector database should I pick for a new project",
+    "write a system prompt for a document summarisation bot",
+    "fine-tune an embedding model on our support tickets",
+    "set up pgvector in docker compose with an HNSW index",
+    "explain how embeddings and cosine similarity work",
+    "our LLM API bill doubled last month, find out where the tokens go",
+    "compute precision and recall for our spam classifier on this test set",
+    "tune the Elasticsearch analyzers for our product catalogue search",
+    "add streaming responses to the chat endpoint of our assistant"
+  ]
+}

@@ -1,0 +1,89 @@
+{
+  "skill_name": "rag-pipeline-review",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Our support bot keeps telling customers it has no information about setting up SSO, but we wrote a whole help article on it months ago. I exported a snapshot of the pipeline: evals/files/missing-document/chunks.jsonl is everything in the vector index, evals/files/missing-document/results.jsonl is what the retriever returned for our test questions in evals/files/queries.jsonl (labels are document IDs), and evals/files/docs.json lists the articles that should be indexed. My guess is the embedding model is bad at acronyms. Can you find out what is actually wrong?",
+      "expected_output": "The agent runs retrieval_eval.py with --match-field doc_id and chunk_stats.py with --docs. It reports that kb/sso-setup.md is labelled relevant for three queries (q05, q06, q07) and appears in no ranking, and that the document has no chunks in the index, so the cause is an incomplete index (ingestion dropped the article), not the embedding model. It lists what was retrieved instead for the failing queries, reports the retrieval metrics with n=24 and k, and recommends finding why ingestion skipped the document, re-indexing it and re-running the same query set. It does not recommend a new embedding model.",
+      "files": [
+        "evals/files/queries.jsonl",
+        "evals/files/docs.json",
+        "evals/files/missing-document/chunks.jsonl",
+        "evals/files/missing-document/results.jsonl"
+      ],
+      "assertions": [
+        "The agent ran scripts/retrieval_eval.py on the query set and results, matching on the document ID field",
+        "The agent ran scripts/chunk_stats.py with the --docs list",
+        "The report names kb/sso-setup.md as never retrieved and as having no chunks in the index",
+        "The failure is classified as an incomplete or stale index (ingestion), not as a retrieval, embedding or generation problem",
+        "The affected queries (q05, q06 and q07) are identified, with what was retrieved instead for at least one of them",
+        "Every retrieval metric quoted states the query-set size (24) and the k it was measured at",
+        "The agent did not recommend changing the embedding model, chunk size or adding a reranker as the fix",
+        "The agent did not call an embedding or model API or run a pipeline to obtain results"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Search quality in our docs assistant dropped after last week's knowledge-base re-sync. I think we have outgrown our embedding model, so please recommend a better one. Before the re-sync: evals/files/healthy/chunks.jsonl and evals/files/healthy/results.jsonl. After: evals/files/duplicated-corpus/chunks.jsonl and evals/files/duplicated-corpus/results.jsonl. Same test questions for both, in evals/files/queries.jsonl, labelled with document IDs. The list of articles we mean to index is evals/files/docs.json.",
+      "expected_output": "The agent scores both results files against the same query set, saving the healthy run as a baseline and comparing the after run with --baseline. It reports the drop in MRR, nDCG and precision at k with n=24, and runs chunk_stats.py on the after snapshot, finding that the knowledge base was indexed a second time under kb-archive/ (47 groups of identical chunks, 11 duplicated documents, 12 documents not in the source list) and that kb-archive/refunds.md#0 is a near-duplicate of kb/refunds.md#0 with a different refund period (14 days against 30). It attributes the regression to the duplicated and stale index, declines to recommend a new embedding model because nothing measured points to it, and recommends removing the archive copies, making ingestion replace instead of append, and re-running the same query set to confirm.",
+      "files": [
+        "evals/files/queries.jsonl",
+        "evals/files/docs.json",
+        "evals/files/healthy/chunks.jsonl",
+        "evals/files/healthy/results.jsonl",
+        "evals/files/duplicated-corpus/chunks.jsonl",
+        "evals/files/duplicated-corpus/results.jsonl"
+      ],
+      "assertions": [
+        "The agent scored the before and the after results on the same query set and compared them with retrieval_eval.py --baseline",
+        "The agent ran scripts/chunk_stats.py on the after snapshot",
+        "The report states that the corpus is indexed twice, naming the kb-archive/ copies as the duplicates",
+        "The report points out the conflicting near-duplicate refund passage (14 days in the archived copy, 30 days in the current one)",
+        "The regression is attributed to the duplicated or stale index, not to the embedding model",
+        "The agent did not recommend a specific replacement embedding model, or stated that changing it is an untested hypothesis that needs a before-and-after measurement",
+        "The numbers quoted for before and after state n=24 and k",
+        "The recommended fix includes removing the duplicates and re-measuring on the same query set"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "To cut embedding cost we switched our splitter to fixed 300-character chunks. Since then answers often stop halfway or leave out a condition. I re-ran our retrieval test (evals/files/queries.jsonl, document-level labels) and the scores are basically the same as before, so I think the LLM is the problem and we should move to a bigger model. Old snapshot: evals/files/healthy/chunks.jsonl and evals/files/healthy/results.jsonl. New snapshot: evals/files/mid-sentence/chunks.jsonl and evals/files/mid-sentence/results.jsonl. Can you review this before we switch models?",
+      "expected_output": "The agent measures retrieval for both snapshots on the same query set and confirms that document-level recall at k=5 is unchanged, while explaining that document-level labels cannot show whether the retrieved chunk holds the complete passage. It runs chunk_stats.py on both chunk files: the old one has no findings, the new one has 22 of 36 chunks ending without sentence punctuation (61.1%), reported as an error, plus a tiny chunk. It classifies the problem as chunking, not generation, shows evidence lines such as kb/refunds.md#0 ending in 'Re' with the next chunk starting 'funds go back', and recommends a boundary-aware splitter measured on the same query set and re-checked with chunk_stats.py. It does not endorse switching the generation model, and says generation was not measured.",
+      "files": [
+        "evals/files/queries.jsonl",
+        "evals/files/healthy/chunks.jsonl",
+        "evals/files/healthy/results.jsonl",
+        "evals/files/mid-sentence/chunks.jsonl",
+        "evals/files/mid-sentence/results.jsonl"
+      ],
+      "assertions": [
+        "The agent ran scripts/chunk_stats.py on the new chunk file and reported the mid-sentence finding with its count or share (22 of 36 chunks, about 61 percent)",
+        "The agent ran scripts/retrieval_eval.py on both snapshots, or on the new one against a baseline of the old one",
+        "The report explains that document-level retrieval metrics cannot detect chunks cut mid-sentence",
+        "The cause is classified as chunking, with at least one chunk ID or file line quoted as evidence",
+        "The agent did not recommend moving to a bigger or different generation model as the fix",
+        "The agent stated that generation quality was not measured, or that no answers were available to check",
+        "Any recommended splitter change is tied to re-measuring on the same query set and re-running chunk_stats.py"
+      ]
+    },
+    {
+      "id": 4,
+      "prompt": "We ship our help-centre assistant next week. Here is a snapshot: evals/files/healthy/chunks.jsonl, evals/files/healthy/results.jsonl, test questions in evals/files/queries.jsonl (document-level labels), article list in evals/files/docs.json. The pipeline puts the top 5 chunks in the prompt. Is retrieval in good shape? A colleague also wants to add a reranker before launch. Worth it?",
+      "expected_output": "The agent runs both scripts and reports no blocking finding: chunk_stats.py has no errors or warnings for 48 chunks in 12 documents, and retrieval_eval.py gives hit rate@5 1.000 with its 95% interval and recall@5 0.979 at n=24. It names the one failing query, q24, as a ranking problem (kb/data-export.md at rank 10, below k=5) and does not invent other defects. On the reranker it says the benefit is unmeasured: the only evidence for it is one query out of 24, and it should be tested by scoring reranked results against the saved baseline on the same query set. It states the limits of the review: 24 queries, document-level labels, generation not measured.",
+      "files": [
+        "evals/files/queries.jsonl",
+        "evals/files/docs.json",
+        "evals/files/healthy/chunks.jsonl",
+        "evals/files/healthy/results.jsonl"
+      ],
+      "assertions": [
+        "The agent ran both scripts and reported that neither produced a blocking finding",
+        "The agent did not report duplicates, missing documents, mid-sentence cuts or other chunk defects for this snapshot",
+        "The report quotes retrieval metrics at k=5 with n=24, including the interval for the hit rate or an explicit caveat about the small query set",
+        "The single failing query (q24) is identified and classified as ranking, with kb/data-export.md found at rank 10",
+        "The agent did not recommend adding the reranker as a measured improvement; it presented it as a hypothesis and said how to test it with a baseline comparison on the same query set",
+        "The report lists what was not measured, including generation quality"
+      ]
+    }
+  ]
+}
